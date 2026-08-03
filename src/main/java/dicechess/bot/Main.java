@@ -3,11 +3,11 @@ package dicechess.bot;
 import com.sun.net.httpserver.HttpServer;
 import lv.id.jc.dicechess.runtime.CustomHandlerServer;
 import lv.id.jc.dicechess.runtime.WebhookHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -15,13 +15,13 @@ import java.nio.charset.StandardCharsets;
  */
 public class Main {
 
-    private static final Logger logger = LoggerFactory.getLogger(Main.class);
+    private static final Logger logger = System.getLogger(Main.class.getName());
     private static final String DEFAULT_WEBHOOK_PATH = "/api/webhook";
 
     public static void main(String[] args) {
         var secret = System.getenv().getOrDefault("DICECHESS_WEBHOOK_SECRET", "");
         if (secret.isEmpty()) {
-            logger.warn("DICECHESS_WEBHOOK_SECRET is not set — webhook verification handshake may fail");
+            logger.log(Level.WARNING, "DICECHESS_WEBHOOK_SECRET is not set — webhook verification handshake may fail");
         }
 
         String modelPath = System.getenv().getOrDefault("MODEL_PATH", "models/baseline.onnx");
@@ -51,15 +51,15 @@ public class Main {
                 }
             });
         } catch (IOException e) {
-            logger.error("Failed to start HTTP server on port {}: {}", port, e.getMessage());
+            logger.log(Level.ERROR, "Failed to start HTTP server on port {0}: {1}", port, e.getMessage());
             evaluator.close();
             return;
         }
 
-        logger.info("Dice Chess Java Bot initialized and listening on port {} at path {}", port, DEFAULT_WEBHOOK_PATH);
+        logger.log(Level.INFO, "Dice Chess Java Bot initialized and listening on port {0} at path {1}", port, DEFAULT_WEBHOOK_PATH);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            logger.info("Shutting down Java Bot server...");
+            logger.log(Level.INFO, "Shutting down Java Bot server...");
             server.stop(1);
             evaluator.close();
         }));
@@ -77,7 +77,7 @@ public class Main {
             try {
                 return Integer.parseInt(portStr);
             } catch (NumberFormatException e) {
-                logger.warn("Invalid PORT environment variable '{}', falling back to 8080", portStr);
+                logger.log(Level.WARNING, "Invalid PORT environment variable ''{0}'', falling back to 8080", portStr);
             }
         }
         return 8080;

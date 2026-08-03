@@ -6,11 +6,11 @@ import dicechess.engine.domain.Position$package$;
 import dicechess.engine.search.TurnGenerator;
 
 import lv.id.jc.dicechess.runtime.TurnContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import scala.collection.immutable.List;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -24,7 +24,7 @@ import java.util.Collections;
  */
 public class OnnxStrategy implements Strategy {
 
-    private static final Logger logger = LoggerFactory.getLogger(OnnxStrategy.class);
+    private static final Logger logger = System.getLogger(OnnxStrategy.class.getName());
 
     private final OnnxEvaluator evaluator;
 
@@ -35,7 +35,7 @@ public class OnnxStrategy implements Strategy {
     @Override
     public java.util.List<String> chooseMoves(TurnContext context) {
         if (context == null || context.dfen() == null || context.dfen().isBlank()) {
-            logger.warn("Received empty or null DFEN context");
+            logger.log(Level.WARNING, "Received empty or null DFEN context");
             return Collections.emptyList();
         }
 
@@ -44,7 +44,7 @@ public class OnnxStrategy implements Strategy {
             String errorMsg = parseResult.left().toOption().isDefined()
                     ? parseResult.left().toOption().get()
                     : "Unknown FEN error";
-            logger.error("Failed to parse DFEN '{}': {}", context.dfen(), errorMsg);
+            logger.log(Level.ERROR, "Failed to parse DFEN ''{0}'': {1}", context.dfen(), errorMsg);
             return Collections.emptyList();
         }
 
@@ -57,7 +57,7 @@ public class OnnxStrategy implements Strategy {
                 (List<List<Object>>) (Object) TurnGenerator.generateAllLegalTurnPaths(initialState);
 
         if (legalTurnPaths.isEmpty()) {
-            logger.info("No legal turn paths available for DFEN: {}", context.dfen());
+            logger.log(Level.INFO, "No legal turn paths available for DFEN: {0}", context.dfen());
             return Collections.emptyList();
         }
 
@@ -91,7 +91,7 @@ public class OnnxStrategy implements Strategy {
             moveNotations.add(moveToNotation(moveInt));
         }
 
-        logger.debug("Chosen turn path: {} with score {}", moveNotations, bestScore);
+        logger.log(Level.DEBUG, "Chosen turn path: {0} with score {1}", moveNotations, bestScore);
         return moveNotations;
     }
 

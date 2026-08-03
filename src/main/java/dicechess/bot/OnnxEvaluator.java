@@ -9,10 +9,9 @@ import dicechess.engine.search.Evaluator;
 import dicechess.engine.search.OnnxFeatures;
 import dicechess.engine.search.RichFeatures;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.nio.FloatBuffer;
 import java.util.Collections;
 
@@ -21,7 +20,7 @@ import java.util.Collections;
  */
 public class OnnxEvaluator implements AutoCloseable {
 
-    private static final Logger logger = LoggerFactory.getLogger(OnnxEvaluator.class);
+    private static final Logger logger = System.getLogger(OnnxEvaluator.class.getName());
 
     private final OrtEnvironment env;
     private final OrtSession session;
@@ -39,16 +38,16 @@ public class OnnxEvaluator implements AutoCloseable {
                     tempEnv = OrtEnvironment.getEnvironment();
                     tempSession = tempEnv.createSession(file.getAbsolutePath(), new OrtSession.SessionOptions());
                     loaded = true;
-                    logger.info("Successfully loaded ONNX model from: {}", file.getAbsolutePath());
+                    logger.log(Level.INFO, "Successfully loaded ONNX model from: {0}", file.getAbsolutePath());
                 } catch (Exception e) {
-                    logger.warn("Failed to load ONNX model from {}: {}. Falling back to engine heuristic.",
+                    logger.log(Level.WARNING, "Failed to load ONNX model from {0}: {1}. Falling back to engine heuristic.",
                             file.getAbsolutePath(), e.getMessage());
                 }
             } else {
-                logger.info("ONNX model file not found at {}. Using engine heuristic evaluation.", modelPath);
+                logger.log(Level.INFO, "ONNX model file not found at {0}. Using engine heuristic evaluation.", modelPath);
             }
         } else {
-            logger.info("No MODEL_PATH specified. Using engine heuristic evaluation.");
+            logger.log(Level.INFO, "No MODEL_PATH specified. Using engine heuristic evaluation.");
         }
 
         this.env = tempEnv;
@@ -92,12 +91,12 @@ public class OnnxEvaluator implements AutoCloseable {
                 } else if (value instanceof float[]) {
                     return ((float[]) value)[0];
                 } else {
-                    logger.warn("Unexpected ONNX output shape: {}", value);
+                    logger.log(Level.WARNING, "Unexpected ONNX output shape: {0}", value);
                     return 0.0f;
                 }
             }
         } catch (OrtException e) {
-            logger.warn("Error running ONNX inference: {}. Falling back to engine evaluation.", e.getMessage());
+            logger.log(Level.WARNING, "Error running ONNX inference: {0}. Falling back to engine evaluation.", e.getMessage());
             return (float) Evaluator.evaluate(state, color);
         }
     }
@@ -108,14 +107,14 @@ public class OnnxEvaluator implements AutoCloseable {
             try {
                 session.close();
             } catch (OrtException e) {
-                logger.error("Error closing OrtSession", e);
+                logger.log(Level.ERROR, "Error closing OrtSession: {0}", e.getMessage());
             }
         }
         if (env != null) {
             try {
                 env.close();
             } catch (Exception e) {
-                logger.error("Error closing OrtEnvironment", e);
+                logger.log(Level.ERROR, "Error closing OrtEnvironment: {0}", e.getMessage());
             }
         }
     }
