@@ -1,33 +1,48 @@
 # AGENTS.md
 
-Branch naming rules, quality gates, and agent instructions for `dicechess-bot-java`.
+Branch naming rules, developer workflows, and agent guidance for the `dicechess-bot-java` repository.
 
 ## Branch Naming Conventions
 
-Branch name pattern: `<type>/<short-description>`, optionally `<type>/<id>-<short-description>`.
+Branch name pattern: `<type>/<short-description>`, optionally `<type>/<id>-<short-description>` to link an issue.
 
 Allowed prefixes:
-- Issue-driven: `task`, `feat`, `bug`
-- Issueless: `refactor`, `chore`, `docs`, `ci`, `test`, `perf`
+- Issue-driven: `task` (work items), `feat` (features), `bug` (fixes) — typically carry an `<id>`.
+- Issueless: `refactor`, `chore`, `docs`, `ci`, `test`, `perf` — no issue required.
 
-Example: `feat/onnx-evaluator-java`, `bug/fix-turn-context-clock`.
+Examples: `bug/42-fix-native-access-warning`, `feat/add-onnx-evaluator`, `chore/bump-deps`.
+
+## Agent Rules (AI Assistance)
+- Issue-driven work (`task`/`feat`/`bug`) starts from an issue; the branch carries its `<id>` and the PR links it with `Closes #<id>`. Issueless work (`refactor`/`chore`/`docs`/`ci`/`test`/`perf`) needs no issue. Name the branch per the pattern above.
+- Always run `mise run format` on any modified code and ensure `mise run check` passes successfully locally before proposing a PR.
+- Human retains the ultimate authority to review, approve, and merge the PR.
+- **GitHub CLI Authentication**: On macOS, credentials are saved in the Keychain. When executing `gh` commands, explicitly set the token to an empty string (e.g., `GH_TOKEN="" gh issue create ...`) to avoid authentication errors.
 
 ## Developer Workflows
+- **Core Runner**: Use `mise run <task>` from the root of the repository for all development tasks.
+- **Local Validation**: `mise run check` compiles code, runs unit & integration tests, and builds the shaded JAR.
+- **Code Formatting**: `mise run format` applies standard Maven/Java formatting.
+- **Local Service Control**:
+  - `mise run build`: Compiles and packages the application via Maven.
+  - `mise run test`: Runs all JUnit 5 unit and integration tests.
+  - `mise run run`: Launches the bot server locally on port 8080.
+  - `mise run docker:build`: Builds the local Docker image `dicechess-bot-java:latest`.
+  - `mise run docker:up`: Starts the container stack via `docker-compose.yaml`.
 
-- **Core Runner**: Use `mise run <task>` from the repository root.
-- **Tasks**:
-  - `mise run compile`: Compiles Java sources (`mvn test-compile`).
-  - `mise run test`: Runs JUnit 5 test suite (`mvn test`).
-  - `mise run check`: Full quality gate (`mvn clean test package`).
-  - `mise run run`: Executes the bot application locally (`java -jar target/dicechess-bot-java-0.1.0-SNAPSHOT.jar`).
+## Approved GitHub Labels
 
-## Quality Gates — Definition of Done
+Use ONLY these labels when generating `gh` commands:
 
-- `mise run check` passes clean before any PR is proposed.
-- All unit and integration tests pass.
-- Code style follows standard Java 21 formatting conventions.
+* **Shared core** (identical across all Dice Chess repositories):
+  * **bug** — Something isn't working.
+  * **enhancement** — New feature or request.
+  * **refactoring** — Code restructuring without behavioral changes.
+  * **documentation** — Improvements or additions to documentation.
+  * **testing** — Adding unit or integration tests.
+  * **performance** — Strategy optimizations and speedups.
+  * **ci-cd** — GitHub Actions, build scripts, or mise configuration.
+  * **dependencies** — Dependency updates (applied by Dependabot).
 
-## Security & Boundaries
-
-- Never commit secrets or signing keys (`DICECHESS_WEBHOOK_SECRET`, `BOT_TOKEN`).
-- Do not commit large model binaries if untracked; keep models under `models/` gitignored if required.
+* **Domains** (this repository only):
+  * **bot-engine** — ONNX strategy, move generation, and Scala interop.
+  * **infrastructure** — Docker, Koyeb, and container runtime.
