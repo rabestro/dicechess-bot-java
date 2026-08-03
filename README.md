@@ -2,6 +2,7 @@
 
 [![CI: Java](https://github.com/rabestro/dicechess-bot-java/actions/workflows/ci.yaml/badge.svg)](https://github.com/rabestro/dicechess-bot-java/actions/workflows/ci.yaml)
 [![CD: Publish Bot Image](https://github.com/rabestro/dicechess-bot-java/actions/workflows/deploy.yaml/badge.svg)](https://github.com/rabestro/dicechess-bot-java/actions/workflows/deploy.yaml)
+[![Play against this bot](https://img.shields.io/badge/🎮%20Play%20against%20this%20bot-Dice%20Chess-10B981?style=for-the-badge)](https://play.jc.id.lv/bots/rabestro/java-baseline)
 
 Official **Java 25 (LTS)** baseline house bot and reference starter template for the [Dice Chess](https://dicechess.net) platform.
 
