@@ -10,5 +10,5 @@ services:
       DICECHESS_WEBHOOK_SECRET: "${DICECHESS_WEBHOOK_SECRET:-development-secret}"
       MODEL_PATH: "/app/models/baseline.onnx"
       ORACLE_SEARCH: "oneply"
-      JAVA_OPTS: "-Xmx256m -XX:+UseG1GC"
+      JAVA_OPTS: "-Xmx256m --enable-native-access=ALL-UNNAMED -XX:+UseG1GC"
     restart: unless-stopped

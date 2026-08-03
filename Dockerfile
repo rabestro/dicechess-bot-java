@@ -32,7 +32,7 @@ RUN mvn clean package -DskipTests -s /root/.m2/settings.xml
 FROM eclipse-temurin:25-jre
 WORKDIR /app
 
-ENV JAVA_OPTS="-Xmx256m -XX:+UseG1GC"
+ENV JAVA_OPTS="-Xmx256m --enable-native-access=ALL-UNNAMED -XX:+UseG1GC"
 ENV PORT=8080
 ENV MODEL_PATH="/app/models/baseline.onnx"
 

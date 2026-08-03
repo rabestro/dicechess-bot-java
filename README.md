@@ -52,7 +52,7 @@ This repository serves two primary roles:
 | `DICECHESS_WEBHOOK_SECRET` | `""`                   | Per-bot secret token for HMAC-SHA256 webhook verification  |
 | `PORT`                     | `8080`                 | HTTP server listening port (Koyeb / Cloud Run / VPS)       |
 | `MODEL_PATH`               | `models/baseline.onnx` | Path to the ONNX value model file                          |
-| `JAVA_OPTS`                | `-Xmx256m`             | JVM memory and GC settings                                 |
+| `JAVA_OPTS`                | `-Xmx256m --enable-native-access=ALL-UNNAMED` | JVM memory, GC, and native access settings |
 
 ## Quick Start
 
