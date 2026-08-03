@@ -1,14 +1,18 @@
 # Multi-stage build
-FROM maven:3.9.9-eclipse-temurin-25-alpine AS builder
+FROM eclipse-temurin:25-jdk-alpine AS builder
+RUN apk add --no-cache maven
 WORKDIR /build
 
-# Copy POM and resolve dependencies
+ARG GITHUB_ACTOR
+ARG GITHUB_TOKEN
+
+# Copy POM, Maven settings, and sources
 COPY pom.xml .
-# Copy settings if available or build directly
+COPY .m2-settings.xml /root/.m2/settings.xml
 COPY src ./src
 COPY models ./models
 
-RUN mvn clean package -DskipTests
+RUN mvn clean package -DskipTests -s /root/.m2/settings.xml
 
 # Runtime stage
 FROM eclipse-temurin:25-jre-alpine

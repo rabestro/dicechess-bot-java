@@ -30,11 +30,6 @@
             <name>GitHub Packages for dicechess-engine-scala</name>
             <url>https://maven.pkg.github.com/rabestro/dicechess-engine-scala</url>
         </repository>
-        <repository>
-            <id>github-dicechess-bot-runtime</id>
-            <name>GitHub Packages for dicechess-bot-runtime</name>
-            <url>https://maven.pkg.github.com/rabestro/dicechess-bot-runtime</url>
-        </repository>
     </repositories>
 
     <dependencies>
