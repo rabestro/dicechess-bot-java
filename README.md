@@ -6,20 +6,20 @@ Official **Java 25** house bot for the Dice Chess platform. Built with `diceches
 ## Features
 
 - **Java 25 & JDK HttpServer**: Extremely low memory footprint (~64–128 MB RAM).
-- **ONNX Model Evaluation**: Evaluates candidate turn sequences using ONNX value models (`models/baseline_nodice.onnx`).
+- **ONNX Model Evaluation**: Evaluates candidate turn sequences using ONNX value models (`models/baseline.onnx`).
 - **Bot Runtime Integration**: Uses `lv.id.jc:dicechess-bot-runtime` for HMAC signature validation, ownership handshake,
   and `TurnContext` processing.
 - **Engine Rules Engine**: Uses `lv.id.jc:dicechess-engine-scala_3` for strict DFEN parsing and legal turn generation.
 
 ## Environment Variables
 
-| Variable                   | Default                        | Description                                         |
-|----------------------------|--------------------------------|-----------------------------------------------------|
-| `DICECHESS_WEBHOOK_SECRET` | —                              | Per-bot secret token for HMAC verification          |
-| `PORT`                     | `8080`                         | Port for JDK HttpServer (Cloud Run / Koyeb / local) |
-| `MODEL_PATH`               | `models/baseline_nodice.onnx`  | Path to the ONNX value model                        |
-| `ORACLE_SEARCH`            | `oneply`                       | Search depth (`oneply` or `expectimax`)             |
-| `JAVA_OPTS`                | `-Xmx256m`                     | Default JVM heap configuration                      |
+| Variable                   | Default                | Description                                         |
+|----------------------------|------------------------|-----------------------------------------------------|
+| `DICECHESS_WEBHOOK_SECRET` | —                      | Per-bot secret token for HMAC verification          |
+| `PORT`                     | `8080`                 | Port for JDK HttpServer (Cloud Run / Koyeb / local) |
+| `MODEL_PATH`               | `models/baseline.onnx` | Path to the ONNX value model                        |
+| `ORACLE_SEARCH`            | `oneply`               | Search depth (`oneply` or `expectimax`)             |
+| `JAVA_OPTS`                | `-Xmx256m`             | Default JVM heap configuration                      |
 
 ## Quick Start
 
@@ -35,7 +35,7 @@ mvn clean package
 
 ```bash
 export DICECHESS_WEBHOOK_SECRET="your-secret"
-export MODEL_PATH="models/baseline_nodice.onnx"
+export MODEL_PATH="models/baseline.onnx"
 java -jar target/dicechess-bot-java-0.1.0-SNAPSHOT.jar
 ```
 

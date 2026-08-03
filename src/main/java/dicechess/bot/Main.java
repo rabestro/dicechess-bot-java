@@ -22,7 +22,7 @@ public class Main {
             logger.warn("DICECHESS_WEBHOOK_SECRET is not set — webhook verification handshake may fail");
         }
 
-        var modelPath = System.getenv().getOrDefault("MODEL_PATH", "models/baseline_nodice.onnx");
+        String modelPath = System.getenv().getOrDefault("MODEL_PATH", "models/baseline.onnx");
         int port = resolvePort();
 
         OnnxEvaluator evaluator = new OnnxEvaluator(modelPath);

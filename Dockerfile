@@ -16,7 +16,7 @@ WORKDIR /app
 
 ENV JAVA_OPTS="-Xmx256m -XX:+UseG1GC"
 ENV PORT=8080
-ENV MODEL_PATH="/app/models/baseline_nodice.onnx"
+ENV MODEL_PATH="/app/models/baseline.onnx"
 
 COPY --from=builder /build/target/dicechess-bot-java-0.1.0-SNAPSHOT.jar /app/app.jar
 COPY --from=builder /build/models /app/models
