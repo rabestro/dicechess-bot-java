@@ -1,6 +1,6 @@
-# Multi-stage build
-FROM eclipse-temurin:25-jdk-alpine AS builder
-RUN apk add --no-cache maven
+# Multi-stage build (using glibc-based Debian image for ONNX Runtime compatibility)
+FROM eclipse-temurin:25-jdk AS builder
+RUN apt-get update && apt-get install -y maven && rm -rf /var/lib/apt/lists/*
 WORKDIR /build
 
 ARG GITHUB_ACTOR
@@ -28,8 +28,8 @@ EOF
 
 RUN mvn clean package -DskipTests -s /root/.m2/settings.xml
 
-# Runtime stage
-FROM eclipse-temurin:25-jre-alpine
+# Runtime stage (glibc-based Debian image for ONNX Runtime native lib compatibility)
+FROM eclipse-temurin:25-jre
 WORKDIR /app
 
 ENV JAVA_OPTS="-Xmx256m -XX:+UseG1GC"
