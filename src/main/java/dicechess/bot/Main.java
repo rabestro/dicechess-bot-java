@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Entry point for the Dice Chess Java bot.
@@ -16,7 +18,7 @@ public class Main {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
     private static final String DEFAULT_WEBHOOK_PATH = "/api/webhook";
 
-    static void main() {
+    public static void main(String[] args) {
         var secret = System.getenv().getOrDefault("DICECHESS_WEBHOOK_SECRET", "");
         if (secret.isEmpty()) {
             logger.warn("DICECHESS_WEBHOOK_SECRET is not set — webhook verification handshake may fail");
@@ -33,6 +35,21 @@ public class Main {
         HttpServer server;
         try {
             server = CustomHandlerServer.start(port, DEFAULT_WEBHOOK_PATH, handler);
+            // Register health check endpoints for Koyeb / Cloud Run / Kubernetes
+            server.createContext("/", exchange -> {
+                byte[] response = "OK".getBytes(StandardCharsets.UTF_8);
+                exchange.sendResponseHeaders(200, response.length);
+                try (OutputStream os = exchange.getResponseBody()) {
+                    os.write(response);
+                }
+            });
+            server.createContext("/health", exchange -> {
+                byte[] response = "OK".getBytes(StandardCharsets.UTF_8);
+                exchange.sendResponseHeaders(200, response.length);
+                try (OutputStream os = exchange.getResponseBody()) {
+                    os.write(response);
+                }
+            });
         } catch (IOException e) {
             logger.error("Failed to start HTTP server on port {}: {}", port, e.getMessage());
             evaluator.close();
@@ -49,7 +66,7 @@ public class Main {
 
         try {
             Thread.currentThread().join();
-        } catch (InterruptedException _) {
+        } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
     }
@@ -59,7 +76,7 @@ public class Main {
         if (portStr != null && !portStr.isBlank()) {
             try {
                 return Integer.parseInt(portStr);
-            } catch (NumberFormatException _) {
+            } catch (NumberFormatException e) {
                 logger.warn("Invalid PORT environment variable '{}', falling back to 8080", portStr);
             }
         }
