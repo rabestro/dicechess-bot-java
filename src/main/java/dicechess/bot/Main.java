@@ -25,8 +25,8 @@ public class Main {
         var modelPath = System.getenv().getOrDefault("MODEL_PATH", "models/baseline_nodice.onnx");
         int port = resolvePort();
 
-        var evaluator = new OnnxEvaluator(modelPath);
-        var strategy = new OracleStrategy(evaluator);
+        OnnxEvaluator evaluator = new OnnxEvaluator(modelPath);
+        OnnxStrategy strategy = new OnnxStrategy(evaluator);
 
         WebhookHandler handler = new WebhookHandler(secret, strategy);
 

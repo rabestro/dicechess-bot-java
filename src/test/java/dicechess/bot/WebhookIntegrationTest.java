@@ -23,7 +23,7 @@ class WebhookIntegrationTest {
     @BeforeEach
     void setUp() throws IOException {
         evaluator = new OnnxEvaluator(null);
-        OracleStrategy strategy = new OracleStrategy(evaluator);
+        OnnxStrategy strategy = new OnnxStrategy(evaluator);
         WebhookHandler handler = new WebhookHandler("test-secret", strategy);
 
         // Bind on ephemeral port 0

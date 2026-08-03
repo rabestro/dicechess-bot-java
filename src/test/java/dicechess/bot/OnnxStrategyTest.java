@@ -9,15 +9,15 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class OracleStrategyTest {
+class OnnxStrategyTest {
 
     private OnnxEvaluator evaluator;
-    private OracleStrategy strategy;
+    private OnnxStrategy strategy;
 
     @BeforeEach
     void setUp() {
         evaluator = new OnnxEvaluator("non-existent-model.onnx"); // Will use fallback engine evaluator
-        strategy = new OracleStrategy(evaluator);
+        strategy = new OnnxStrategy(evaluator);
     }
 
     @AfterEach
