@@ -15,6 +15,7 @@ Examples: `bug/42-fix-native-access-warning`, `feat/add-onnx-evaluator`, `chore/
 ## Agent Rules (AI Assistance)
 - Issue-driven work (`task`/`feat`/`bug`) starts from an issue; the branch carries its `<id>` and the PR links it with `Closes #<id>`. Issueless work (`refactor`/`chore`/`docs`/`ci`/`test`/`perf`) needs no issue. Name the branch per the pattern above.
 - Always run `mise run format` on any modified code and ensure `mise run check` passes successfully locally before proposing a PR.
+- Releases are human-triggered via GitHub Actions: `gh workflow run release.yaml -f bump=patch|minor|major`. Propose and assist, never execute releases directly.
 - Human retains the ultimate authority to review, approve, and merge the PR.
 - **GitHub CLI Authentication**: On macOS, credentials are saved in the Keychain. When executing `gh` commands, explicitly set the token to an empty string (e.g., `GH_TOKEN="" gh issue create ...`) to avoid authentication errors.
 
