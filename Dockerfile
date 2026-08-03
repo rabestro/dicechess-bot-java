@@ -6,11 +6,25 @@ WORKDIR /build
 ARG GITHUB_ACTOR
 ARG GITHUB_TOKEN
 
-# Copy POM, Maven settings, and sources
+# Copy POM, sources, and models
 COPY pom.xml .
-COPY .m2-settings.xml /root/.m2/settings.xml
 COPY src ./src
 COPY models ./models
+
+# Generate Maven settings for GitHub Packages authentication
+RUN mkdir -p /root/.m2 && cat << EOF > /root/.m2/settings.xml
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+    <servers>
+        <server>
+            <id>github-dicechess-engine</id>
+            <username>${GITHUB_ACTOR}</username>
+            <password>${GITHUB_TOKEN}</password>
+        </server>
+    </servers>
+</settings>
+EOF
 
 RUN mvn clean package -DskipTests -s /root/.m2/settings.xml
 
