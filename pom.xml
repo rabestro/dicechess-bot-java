@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>lv.id.jc</groupId>
+    <artifactId>dicechess-bot-java</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>dicechess-bot-java</name>
+    <description>Official Dice Chess house bot written in Java 25, powered by ONNX Runtime and dicechess-bot-runtime.</description>
+
+    <properties>
+        <maven.compiler.source>25</maven.compiler.source>
+        <maven.compiler.target>25</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <dicechess.engine.version>1.10.4</dicechess.engine.version>
+        <dicechess.bot-runtime.version>1.0.0-SNAPSHOT</dicechess.bot-runtime.version>
+        <onnxruntime.version>1.20.0</onnxruntime.version>
+        <junit.jupiter.version>5.12.0</junit.jupiter.version>
+        <logback.version>1.5.17</logback.version>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>github-dicechess-engine</id>
+            <name>GitHub Packages for dicechess-engine-scala</name>
+            <url>https://maven.pkg.github.com/rabestro/dicechess-engine-scala</url>
+        </repository>
+        <repository>
+            <id>github-dicechess-bot-runtime</id>
+            <name>GitHub Packages for dicechess-bot-runtime</name>
+            <url>https://maven.pkg.github.com/rabestro/dicechess-bot-runtime</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <!-- Dice Chess Bot Runtime (Java artifact: HMAC, Handshake, TurnContext, JDK HttpServer) -->
+        <dependency>
+            <groupId>lv.id.jc</groupId>
+            <artifactId>dicechess-bot-runtime</artifactId>
+            <version>${dicechess.bot-runtime.version}</version>
+        </dependency>
+
+        <!-- Dice Chess Scala Engine (JVM artifact for rules, legal move generation, DFEN parser) -->
+        <dependency>
+            <groupId>lv.id.jc</groupId>
+            <artifactId>dicechess-engine-scala_3</artifactId>
+            <version>${dicechess.engine.version}</version>
+        </dependency>
+
+        <!-- Microsoft ONNX Runtime Java API -->
+        <dependency>
+            <groupId>com.microsoft.onnxruntime</groupId>
+            <artifactId>onnxruntime</artifactId>
+            <version>${onnxruntime.version}</version>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+
+        <!-- Testing -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <release>25</release>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.5.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.6.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>dicechess.bot.Main</mainClass>
+                                </transformer>
+                            </transformers>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

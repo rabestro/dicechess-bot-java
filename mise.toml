@@ -1,0 +1,20 @@
+[tools]
+java = "temurin-25"
+maven = "latest"
+gh = "latest"
+
+[tasks.compile]
+description = "Compile Java sources"
+run = "mvn test-compile -s .m2-settings.xml"
+
+[tasks.test]
+description = "Run unit tests"
+run = "mvn test -s .m2-settings.xml"
+
+[tasks.check]
+description = "Run complete build and quality check"
+run = "mvn clean test package -s .m2-settings.xml"
+
+[tasks.run]
+description = "Run bot locally"
+run = "java -jar target/dicechess-bot-java-0.1.0-SNAPSHOT.jar"
