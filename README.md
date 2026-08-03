@@ -3,6 +3,7 @@
 [![CI: Java](https://github.com/rabestro/dicechess-bot-java/actions/workflows/ci.yaml/badge.svg)](https://github.com/rabestro/dicechess-bot-java/actions/workflows/ci.yaml)
 [![CD: Publish Bot Image](https://github.com/rabestro/dicechess-bot-java/actions/workflows/deploy.yaml/badge.svg)](https://github.com/rabestro/dicechess-bot-java/actions/workflows/deploy.yaml)
 [![Play against this bot](https://img.shields.io/badge/Play%20against%20bot-online-34d058?logo=gamepad)](https://play.jc.id.lv/bots/rabestro/java-baseline)
+[![Bot API Docs](https://img.shields.io/badge/Bot_API-bots.jc.id.lv-2563eb?logo=book)](https://bots.jc.id.lv)
 
 Official **Java 25 (LTS)** baseline house bot and reference starter template for the [Dice Chess](https://dicechess.net) platform.
 
@@ -80,6 +81,59 @@ docker build -t dicechess-bot-java .
 docker run -p 8080:8080 \
   -e DICECHESS_WEBHOOK_SECRET="your-secret-token" \
   ghcr.io/rabestro/dicechess-bot-java:latest
+```
+
+## Registering & Connecting Your Bot ([`bots.jc.id.lv`](https://bots.jc.id.lv))
+
+To connect your bot to the public Dice Chess platform via Webhook:
+
+### 1. Register a durable identity (`POST /bot/register`)
+```bash
+curl -X POST "https://play-api.jc.id.lv/bot/register" \
+  -H "Content-Type: application/json" \
+  -d '{"team": "your-team", "name": "your-bot-name"}'
+```
+Response:
+```json
+{
+  "token": "BEARER_TOKEN_STRING",
+  "team": "your-team",
+  "name": "your-bot-name",
+  "id": "bot:team:your-team:your-bot-name"
+}
+```
+> ⚠️ **Note**: Save the `token` immediately — it is shown only once!
+
+### 2. Register your Webhook URL (`POST /bot/webhook`)
+Deploy your bot container to a public HTTPS host (e.g. [Koyeb](https://koyeb.com), Cloud Run, or VPS) and register the webhook:
+```bash
+curl -X POST "https://play-api.jc.id.lv/bot/webhook" \
+  -H "Authorization: Bearer BEARER_TOKEN_STRING" \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://your-bot-app.koyeb.app/api/webhook"}'
+```
+Response:
+```json
+{
+  "url": "https://your-bot-app.koyeb.app/api/webhook",
+  "secret": "WEBHOOK_HMAC_SECRET_64_HEX_CHARS"
+}
+```
+
+### 3. Configure `DICECHESS_WEBHOOK_SECRET`
+Set `DICECHESS_WEBHOOK_SECRET="WEBHOOK_HMAC_SECRET_64_HEX_CHARS"` in your bot host's environment variables to enable cryptographic HMAC-SHA256 payload verification.
+
+### 4. Join the Rating Ladder & Open to Humans
+```bash
+# Join the Glicko-2 rating ladder
+curl -X POST "https://play-api.jc.id.lv/bot/ladder/join" \
+  -H "Authorization: Bearer BEARER_TOKEN_STRING"
+
+# Open to human players from the Bot Catalog
+curl -X POST "https://play-api.jc.id.lv/bot/open-to-humans" \
+  -H "Authorization: Bearer BEARER_TOKEN_STRING" \
+  -H "Content-Type: application/json" \
+  -d '{"description": "Your bot description here."}'
 ```
 
 ## Creating Custom Strategies
