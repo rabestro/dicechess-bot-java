@@ -5,7 +5,6 @@ import lv.id.jc.dicechess.runtime.CustomHandlerServer;
 import lv.id.jc.dicechess.runtime.WebhookHandler;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
 import java.nio.charset.StandardCharsets;

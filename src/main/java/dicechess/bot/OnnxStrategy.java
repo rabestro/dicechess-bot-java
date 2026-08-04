@@ -1,7 +1,6 @@
 package dicechess.bot;
 
 import dicechess.engine.domain.FenParser;
-import dicechess.engine.domain.GameState;
 import dicechess.engine.domain.Position$package$;
 import dicechess.engine.search.TurnGenerator;
 
