@@ -12,6 +12,14 @@
     <name>dicechess-bot-java</name>
     <description>Official Dice Chess house bot written in Java 25, powered by ONNX Runtime and dicechess-bot-runtime.</description>
 
+    <licenses>
+        <license>
+            <name>GNU Affero General Public License v3.0</name>
+            <url>https://www.gnu.org/licenses/agpl-3.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
     <properties>
         <maven.compiler.source>25</maven.compiler.source>
         <maven.compiler.target>25</maven.compiler.target>

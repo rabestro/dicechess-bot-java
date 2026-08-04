@@ -3,6 +3,7 @@
 [![CI: Java](https://github.com/rabestro/dicechess-bot-java/actions/workflows/ci.yaml/badge.svg)](https://github.com/rabestro/dicechess-bot-java/actions/workflows/ci.yaml)
 [![CD: Publish Bot Image](https://github.com/rabestro/dicechess-bot-java/actions/workflows/deploy.yaml/badge.svg)](https://github.com/rabestro/dicechess-bot-java/actions/workflows/deploy.yaml)
 [![Javadoc](https://img.shields.io/badge/Javadoc-GitHub_Pages-blue?logo=java)](https://rabestro.github.io/dicechess-bot-java/)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](LICENSE)
 [![Play against this bot](https://img.shields.io/badge/Play%20against%20bot-online-34d058?logo=gamepad)](https://play.jc.id.lv/bots/rabestro/java-baseline)
 [![Bot API Docs](https://img.shields.io/badge/Bot_API-bots.jc.id.lv-2563eb?logo=book)](https://bots.jc.id.lv)
 
@@ -153,4 +154,5 @@ To create a custom bot strategy:
 
 ## License
 
-AGPL-3.0 / MIT (Upstream code). Model files are proprietary platform artifacts.
+[GNU Affero General Public License v3.0 (AGPL-3.0)](LICENSE).
+Model files (`models/*.onnx`) are proprietary platform evaluation artifacts.
