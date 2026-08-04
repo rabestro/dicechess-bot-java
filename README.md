@@ -25,27 +25,18 @@ This repository serves two primary roles:
 
 ## Architecture
 
-```
-                       +------------------------+
-                       |   Dice Chess Server    |
-                       +-----------+------------+
-                                   | (HTTP Webhook)
-                                   v
-+----------------------------------+-----------------------------------+
-|                        dicechess-bot-java                            |
-|                                                                      |
-|  +-----------------------+           +----------------------------+  |
-|  |   WebhookHandler      | --------> |        OnnxStrategy        |  |
-|  | (dicechess-bot-runtime)           |   (Turn path selection)    |  |
-|  +-----------------------+           +-------------+--------------+  |
-|                                                    |                 |
-|                                    +---------------+---------------+ |
-|                                    v                               v |
-|                         +--------------------+   +-----------------+ |
-|                         |   TurnGenerator    |   |  OnnxEvaluator  | |
-|                         | (Scala 3 Engine)   |   | (ONNX Runtime)  | |
-|                         +--------------------+   +-----------------+ |
-+----------------------------------------------------------------------+
+```mermaid
+graph TD
+    Server["🎲 Dice Chess Server"] -->|HTTP Webhook| Handler["WebhookHandler<br/><i>(dicechess-bot-runtime)</i>"]
+
+    subgraph App["dicechess-bot-java"]
+        Handler -->|TurnContext| Strategy["OnnxStrategy<br/><i>(Turn Path Selection)</i>"]
+        Strategy -->|1. Generate legal turn paths| Engine["TurnGenerator<br/><i>(dicechess-engine-scala)</i>"]
+        Strategy -->|2. Evaluate positions| Evaluator["OnnxEvaluator<br/><i>(ONNX Runtime)</i>"]
+        Evaluator -->|3. Infer board score| Model[("models/baseline.onnx")]
+    end
+
+    Strategy -->|Return move sequence| Server
 ```
 
 ## Environment Variables
