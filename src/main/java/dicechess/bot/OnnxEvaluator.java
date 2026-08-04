@@ -86,14 +86,14 @@ public class OnnxEvaluator implements AutoCloseable {
                  OrtSession.Result result = session.run(Collections.singletonMap(session.getInputNames().iterator().next(), inputTensor))) {
 
                 Object value = result.get(0).getValue();
-                if (value instanceof float[][] floatArrayArray) {
-                    return floatArrayArray[0][0];
-                } else if (value instanceof float[] floatArray) {
-                    return floatArray[0];
-                } else {
-                    logger.log(Level.WARNING, "Unexpected ONNX output shape: {0}", value);
-                    return 0.0f;
-                }
+                return switch (value) {
+                    case float[][] floatArrayArray -> floatArrayArray[0][0];
+                    case float[] floatArray -> floatArray[0];
+                    default -> {
+                        logger.log(Level.WARNING, "Unexpected ONNX output shape: {0}", value);
+                        yield 0.0f;
+                    }
+                };
             }
         } catch (OrtException e) {
             logger.log(Level.WARNING, "Error running ONNX inference: {0}. Falling back to engine evaluation.", e.getMessage());
