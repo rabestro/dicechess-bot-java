@@ -130,6 +130,7 @@
                     <nohelp>true</nohelp>
                     <quiet>true</quiet>
                     <release>25</release>
+                    <outputDirectory>${project.build.directory}/site</outputDirectory>
                 </configuration>
             </plugin>
         </plugins>
