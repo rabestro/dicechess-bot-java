@@ -1,13 +1,16 @@
 package dicechess.bot;
 
 import dicechess.engine.domain.FenParser;
-import dicechess.engine.domain.Position$package$;
+import dicechess.engine.domain.GameState;
 import dicechess.engine.search.TurnGenerator;
 
 import lv.id.jc.dicechess.runtime.TurnContext;
 
 import scala.collection.immutable.List;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
 import java.util.ArrayList;
@@ -24,6 +27,17 @@ import java.util.Collections;
 public class OnnxStrategy implements Strategy {
 
     private static final Logger logger = System.getLogger(OnnxStrategy.class.getName());
+    private static final MethodHandle MAKE_MOVE_MH;
+
+    static {
+        try {
+            var clazz = Class.forName("dicechess.engine.domain.Position$package");
+            var methodType = MethodType.methodType(GameState.class, GameState.class, int.class);
+            MAKE_MOVE_MH = MethodHandles.lookup().findStatic(clazz, "makeMove_Move", methodType);
+        } catch (Exception e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
 
     private final OnnxEvaluator evaluator;
 
@@ -69,7 +83,7 @@ public class OnnxStrategy implements Strategy {
             // Apply sequence of Move values using makeMove_Move to get final turn state
             var currentState = initialState;
             for (var moveInt : pathJava) {
-                currentState = Position$package$.MODULE$.makeMove_Move(currentState, moveInt);
+                currentState = applyMove(currentState, moveInt);
             }
 
             // Score final state from initial mover's perspective
@@ -92,6 +106,14 @@ public class OnnxStrategy implements Strategy {
 
         logger.log(Level.DEBUG, "Chosen turn path: {0} with score {1}", moveNotations, bestScore);
         return moveNotations;
+    }
+
+    private static GameState applyMove(GameState state, int moveInt) {
+        try {
+            return (GameState) MAKE_MOVE_MH.invokeExact(state, moveInt);
+        } catch (Throwable e) {
+            throw new IllegalStateException("Failed to apply move via engine: " + moveInt, e);
+        }
     }
 
     /**
