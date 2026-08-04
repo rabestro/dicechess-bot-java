@@ -41,6 +41,11 @@ public class OnnxStrategy implements Strategy {
 
     private final OnnxEvaluator evaluator;
 
+    /**
+     * Constructs a new ONNX strategy instance backed by the given evaluator.
+     *
+     * @param evaluator position evaluator instance (ONNX-backed or engine fallback)
+     */
     public OnnxStrategy(OnnxEvaluator evaluator) {
         this.evaluator = evaluator;
     }

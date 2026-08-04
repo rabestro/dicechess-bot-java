@@ -26,6 +26,13 @@ public class OnnxEvaluator implements AutoCloseable {
     private final OrtSession session;
     private final boolean isLoaded;
 
+    /**
+     * Constructs a new ONNX evaluator for the given model file path.
+     *
+     * @param modelPath filesystem path to the ONNX model file (e.g. {@code "models/baseline.onnx"}).
+     *                  If {@code null}, blank, or file does not exist, the evaluator gracefully
+     *                  falls back to engine heuristic evaluation.
+     */
     public OnnxEvaluator(String modelPath) {
         OrtEnvironment tempEnv = null;
         OrtSession tempSession = null;
@@ -55,6 +62,11 @@ public class OnnxEvaluator implements AutoCloseable {
         this.isLoaded = loaded;
     }
 
+    /**
+     * Indicates whether an ONNX model file was loaded and is active for evaluation.
+     *
+     * @return {@code true} if ONNX model is loaded; {@code false} if using engine heuristic fallback
+     */
     public boolean isLoaded() {
         return isLoaded;
     }

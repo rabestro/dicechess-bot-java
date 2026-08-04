@@ -10,13 +10,23 @@ import java.lang.System.Logger.Level;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Entry point for the Dice Chess Java bot.
+ * Entry point for the Dice Chess Java bot starter template.
  */
 public class Main {
 
     private static final Logger logger = System.getLogger(Main.class.getName());
     private static final String DEFAULT_WEBHOOK_PATH = "/api/webhook";
 
+    private Main() {
+        // Utility / entry point class
+    }
+
+    /**
+     * Starts the bot application, loads configuration from environment variables,
+     * and binds the embedded HTTP webhook server.
+     *
+     * @param args command-line arguments (unused)
+     */
     @SuppressWarnings("java:S1172")
     public static void main(String[] args) {
         var secret = System.getenv().getOrDefault("DICECHESS_WEBHOOK_SECRET", "");
