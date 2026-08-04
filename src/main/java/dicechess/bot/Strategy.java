@@ -10,7 +10,7 @@ import java.util.function.Function;
  */
 @FunctionalInterface
 public interface Strategy extends Function<TurnContext, List<String>> {
-    
+
     /**
      * Choose the best list of move notations (micro-moves forming a turn) for the given TurnContext.
      *
