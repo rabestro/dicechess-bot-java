@@ -32,7 +32,7 @@ public class OnnxEvaluator implements AutoCloseable {
         boolean loaded = false;
 
         if (modelPath != null && !modelPath.isBlank()) {
-            File file = new File(modelPath);
+            var file = new File(modelPath);
             if (file.exists() && file.isFile()) {
                 try {
                     tempEnv = OrtEnvironment.getEnvironment();
@@ -74,18 +74,18 @@ public class OnnxEvaluator implements AutoCloseable {
 
         try {
             // Determine feature count expected by ONNX model (9 for RichFeatures, 7 for OnnxFeatures)
-            long inputNumFeatures = session.getInputInfo().values().iterator().next().getInfo().toString().contains("9") ? 9 : 7;
-            float[] features = (inputNumFeatures == 9) ?
+            var inputNumFeatures = session.getInputInfo().values().iterator().next().getInfo().toString().contains("9") ? 9 : 7;
+            var features = (inputNumFeatures == 9) ?
                     RichFeatures.extract(state, color) :
                     OnnxFeatures.extract(state, color);
 
-            long[] shape = new long[]{1, features.length};
-            FloatBuffer buffer = FloatBuffer.wrap(features);
+            var shape = new long[]{1, features.length};
+            var buffer = FloatBuffer.wrap(features);
 
-            try (OnnxTensor inputTensor = OnnxTensor.createTensor(env, buffer, shape);
-                 OrtSession.Result result = session.run(Collections.singletonMap(session.getInputNames().iterator().next(), inputTensor))) {
+            try (var inputTensor = OnnxTensor.createTensor(env, buffer, shape);
+                 var result = session.run(Collections.singletonMap(session.getInputNames().iterator().next(), inputTensor))) {
 
-                Object value = result.get(0).getValue();
+                var value = result.get(0).getValue();
                 return switch (value) {
                     case float[][] floatArrayArray -> floatArrayArray[0][0];
                     case float[] floatArray -> floatArray[0];

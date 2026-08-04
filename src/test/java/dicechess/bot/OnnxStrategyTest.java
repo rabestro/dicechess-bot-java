@@ -30,17 +30,17 @@ class OnnxStrategyTest {
     @Test
     void testChooseMovesWithEmptyDfen() {
         var context = new TurnContext("test-game", "", null, List.of());
-        List<String> moves = strategy.chooseMoves(context);
+        var moves = strategy.chooseMoves(context);
         assertTrue(moves.isEmpty(), "Should return empty list for empty DFEN");
     }
 
     @Test
     void testChooseMovesWithInitialPosition() {
         // Initial DFEN position with dice pool 'p' (pawn roll) for white
-        String dfen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 p";
+        var dfen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 p";
         var context = new TurnContext("test-game", dfen, null, List.of());
 
-        List<String> moves = strategy.chooseMoves(context);
+        var moves = strategy.chooseMoves(context);
         assertFalse(moves.isEmpty(), "Should generate at least one legal move for pawn roll");
         assertEquals(1, moves.size(), "Pawn roll should produce 1 micro-move");
     }
@@ -48,10 +48,10 @@ class OnnxStrategyTest {
     @Test
     void testChooseMovesWithTripleDicePool() {
         // Initial DFEN position with dice pool 'pnb' for white
-        String dfen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 pnb";
+        var dfen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 pnb";
         var context = new TurnContext("test-game", dfen, null, List.of());
 
-        List<String> moves = strategy.chooseMoves(context);
+        var moves = strategy.chooseMoves(context);
         assertFalse(moves.isEmpty(), "Should generate legal turn sequence for triple dice pool");
         assertTrue(moves.size() <= 3, "Turn should contain at most 3 micro-moves");
     }

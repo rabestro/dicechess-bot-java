@@ -25,29 +25,29 @@ public class Main {
             logger.log(Level.WARNING, "DICECHESS_WEBHOOK_SECRET is not set — webhook verification handshake may fail");
         }
 
-        String modelPath = System.getenv().getOrDefault("MODEL_PATH", "models/baseline.onnx");
-        int port = resolvePort();
+        var modelPath = System.getenv().getOrDefault("MODEL_PATH", "models/baseline.onnx");
+        var port = resolvePort();
 
-        OnnxEvaluator evaluator = new OnnxEvaluator(modelPath);
-        OnnxStrategy strategy = new OnnxStrategy(evaluator);
+        var evaluator = new OnnxEvaluator(modelPath);
+        var strategy = new OnnxStrategy(evaluator);
 
-        WebhookHandler handler = new WebhookHandler(secret, strategy);
+        var handler = new WebhookHandler(secret, strategy);
 
         HttpServer server;
         try {
             server = CustomHandlerServer.start(port, DEFAULT_WEBHOOK_PATH, handler);
             // Register health check endpoints for Koyeb / Cloud Run / Kubernetes
             server.createContext("/", exchange -> {
-                byte[] response = "OK".getBytes(StandardCharsets.UTF_8);
+                var response = "OK".getBytes(StandardCharsets.UTF_8);
                 exchange.sendResponseHeaders(200, response.length);
-                try (OutputStream os = exchange.getResponseBody()) {
+                try (var os = exchange.getResponseBody()) {
                     os.write(response);
                 }
             });
             server.createContext("/health", exchange -> {
-                byte[] response = "OK".getBytes(StandardCharsets.UTF_8);
+                var response = "OK".getBytes(StandardCharsets.UTF_8);
                 exchange.sendResponseHeaders(200, response.length);
-                try (OutputStream os = exchange.getResponseBody()) {
+                try (var os = exchange.getResponseBody()) {
                     os.write(response);
                 }
             });

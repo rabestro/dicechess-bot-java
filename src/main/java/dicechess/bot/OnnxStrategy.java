@@ -41,19 +41,19 @@ public class OnnxStrategy implements Strategy {
 
         var parseResult = FenParser.parse(context.dfen());
         if (parseResult.isLeft()) {
-            String errorMsg = parseResult.left().toOption().isDefined()
+            var errorMsg = parseResult.left().toOption().isDefined()
                     ? parseResult.left().toOption().get()
                     : "Unknown FEN error";
             logger.log(Level.ERROR, "Failed to parse DFEN ''{0}'': {1}", context.dfen(), errorMsg);
             return Collections.emptyList();
         }
 
-        GameState initialState = parseResult.toOption().get();
-        int activeColor = initialState.flags() & 1; // Bit 0 of flags is activeColor (0 = White, 1 = Black)
+        var initialState = parseResult.toOption().get();
+        var activeColor = initialState.flags() & 1; // Bit 0 of flags is activeColor (0 = White, 1 = Black)
 
         // TurnGenerator returns List[List[Move]]
         @SuppressWarnings("unchecked")
-        List<List<Object>> legalTurnPaths =
+        var legalTurnPaths =
                 (List<List<Object>>) (Object) TurnGenerator.generateAllLegalTurnPaths(initialState);
 
         if (legalTurnPaths.isEmpty()) {
@@ -64,17 +64,17 @@ public class OnnxStrategy implements Strategy {
         java.util.List<Integer> bestPath = null;
         float bestScore = -Float.MAX_VALUE;
 
-        for (List<Object> pathScala : scala.jdk.javaapi.CollectionConverters.asJava(legalTurnPaths)) {
-            java.util.List<Integer> pathJava = toJavaIntegerList(pathScala);
+        for (var pathScala : scala.jdk.javaapi.CollectionConverters.asJava(legalTurnPaths)) {
+            var pathJava = toJavaIntegerList(pathScala);
 
             // Apply sequence of Move values using makeMove_Move to get final turn state
-            GameState currentState = initialState;
-            for (Integer moveInt : pathJava) {
+            var currentState = initialState;
+            for (var moveInt : pathJava) {
                 currentState = Position$package$.MODULE$.makeMove_Move(currentState, moveInt);
             }
 
             // Score final state from initial mover's perspective
-            float score = evaluator.evaluate(currentState, activeColor);
+            var score = evaluator.evaluate(currentState, activeColor);
 
             if (score > bestScore || bestPath == null) {
                 bestScore = score;
@@ -86,8 +86,8 @@ public class OnnxStrategy implements Strategy {
             return Collections.emptyList();
         }
 
-        java.util.List<String> moveNotations = new ArrayList<>();
-        for (Integer moveInt : bestPath) {
+        var moveNotations = new ArrayList<String>();
+        for (var moveInt : bestPath) {
             moveNotations.add(moveToNotation(moveInt));
         }
 
@@ -106,17 +106,17 @@ public class OnnxStrategy implements Strategy {
      * </ul>
      */
     static String moveToNotation(int move) {
-        int to = move & 0x3f;
-        int from = (move >>> 6) & 0x3f;
-        int flags = (move >>> 12) & 0x0f;
+        var to = move & 0x3f;
+        var from = (move >>> 6) & 0x3f;
+        var flags = (move >>> 12) & 0x0f;
 
-        char fromFile = (char) ('a' + (from % 8));
-        int fromRank = (from / 8) + 1;
-        char toFile = (char) ('a' + (to % 8));
-        int toRank = (to / 8) + 1;
+        var fromFile = (char) ('a' + (from % 8));
+        var fromRank = (from / 8) + 1;
+        var toFile = (char) ('a' + (to % 8));
+        var toRank = (to / 8) + 1;
 
         // Promotion: flags bit 3 set (flags >= 8)
-        String promStr = "";
+        var promStr = "";
         if ((flags & 8) != 0) {
             promStr = switch (flags & 3) {
                 case 0 -> "n"; // KnightPromotion(8) or KnightPromoCapture(12)
@@ -131,8 +131,8 @@ public class OnnxStrategy implements Strategy {
     }
 
     private static java.util.List<Integer> toJavaIntegerList(List<Object> scalaList) {
-        java.util.List<Integer> result = new ArrayList<>();
-        for (Object item : scala.jdk.javaapi.CollectionConverters.asJava(scalaList)) {
+        var result = new ArrayList<Integer>();
+        for (var item : scala.jdk.javaapi.CollectionConverters.asJava(scalaList)) {
             if (item instanceof Integer intValue) {
                 result.add(intValue);
             } else if (item instanceof Number number) {

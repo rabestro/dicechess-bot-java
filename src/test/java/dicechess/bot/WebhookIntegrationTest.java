@@ -23,8 +23,8 @@ class WebhookIntegrationTest {
     @BeforeEach
     void setUp() throws IOException {
         evaluator = new OnnxEvaluator(null);
-        OnnxStrategy strategy = new OnnxStrategy(evaluator);
-        WebhookHandler handler = new WebhookHandler("test-secret", strategy);
+        var strategy = new OnnxStrategy(evaluator);
+        var handler = new WebhookHandler("test-secret", strategy);
 
         // Bind on ephemeral port 0
         server = CustomHandlerServer.start(0, "/api/webhook", handler);
@@ -42,16 +42,16 @@ class WebhookIntegrationTest {
 
     @Test
     void testWebhookRejectsUnauthenticatedRequest() throws Exception {
-        int port = server.getAddress().getPort();
-        HttpClient client = HttpClient.newHttpClient();
+        var port = server.getAddress().getPort();
+        var client = HttpClient.newHttpClient();
 
         // A bare GET without proper HMAC signature headers should be rejected
-        HttpRequest request = HttpRequest.newBuilder()
+        var request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:" + port + "/api/webhook"))
                 .GET()
                 .build();
 
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(400, response.statusCode(), "Unauthenticated request should return 400");
     }
 }
