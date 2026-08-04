@@ -1,0 +1,35 @@
+# Domain labels from package/path changes
+java-bot:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'src/main/java/**'
+
+infrastructure:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'Dockerfile'
+          - 'docker-compose.yaml'
+          - 'pom.xml'
+
+# Type labels from paths
+testing:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'src/test/**'
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '**/*.md'
+ci-cd:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '.github/**'
+          - 'mise.toml'
+
+# Type labels from branch naming convention: (task|feat|bug|refactor)/<id>-<desc>
+enhancement:
+  - head-branch: ['^feat/']
+bug:
+  - head-branch: ['^bug/']
+refactoring:
+  - head-branch: ['^refactor/']
