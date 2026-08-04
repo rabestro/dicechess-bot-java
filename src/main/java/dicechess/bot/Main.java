@@ -18,6 +18,7 @@ public class Main {
     private static final Logger logger = System.getLogger(Main.class.getName());
     private static final String DEFAULT_WEBHOOK_PATH = "/api/webhook";
 
+    @SuppressWarnings("java:S1172")
     public static void main(String[] args) {
         var secret = System.getenv().getOrDefault("DICECHESS_WEBHOOK_SECRET", "");
         if (secret.isEmpty()) {
@@ -66,7 +67,7 @@ public class Main {
 
         try {
             Thread.currentThread().join();
-        } catch (InterruptedException e) {
+        } catch (InterruptedException _) {
             Thread.currentThread().interrupt();
         }
     }
@@ -76,7 +77,7 @@ public class Main {
         if (portStr != null && !portStr.isBlank()) {
             try {
                 return Integer.parseInt(portStr);
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException _) {
                 logger.log(Level.WARNING, "Invalid PORT environment variable ''{0}'', falling back to 8080", portStr);
             }
         }
